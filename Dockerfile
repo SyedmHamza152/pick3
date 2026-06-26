@@ -7,6 +7,9 @@ RUN npm ci
 COPY frontend ./
 RUN npm run build
 
+# Verify build output
+RUN ls -la /app/frontend/out || echo "Build output directory not found"
+
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -27,6 +30,9 @@ COPY backend/scripts backend/scripts
 COPY db db
 
 COPY --from=frontend-builder /app/frontend/out ./frontend/out
+
+# Verify frontend files were copied
+RUN ls -la ./frontend/out || echo "Frontend files not found after copy"
 
 WORKDIR /app/backend
 

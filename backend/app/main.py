@@ -38,7 +38,14 @@ if not upload_path.is_absolute():
 upload_path.mkdir(parents=True, exist_ok=True)
 
 # Mount static frontend files
-frontend_path = Path(__file__).resolve().parents[1] / "frontend" / "out"
+frontend_path = Path(__file__).resolve().parents[2] / "frontend" / "out"
+
+# Also check the Docker build path
+if not frontend_path.exists():
+    frontend_path = Path("/app/frontend/out")
+
+print(f"Frontend path: {frontend_path}")
+print(f"Frontend path exists: {frontend_path.exists()}")
 
 app.include_router(auth.router)
 app.include_router(deposits.router)
@@ -55,13 +62,16 @@ if frontend_path.exists():
     app.mount("/_next", StaticFiles(directory=str(frontend_path / "_next")), name="next")
     app.mount("/static", StaticFiles(directory=str(frontend_path)), name="static")
 
-    @app.get("/", include_in_schema=False)
-    async def serve_root():
-        return FileResponse(frontend_path / "index.html")
-
     @app.get("/{full_path:path}", include_in_schema=False)
-    async def serve_frontend(full_path: str):
+    async def serve_frontend(full_path: str = ""):
+        if not full_path or full_path == "/":
+            return FileResponse(frontend_path / "index.html")
         file_path = frontend_path / full_path
         if file_path.exists() and file_path.is_file():
             return FileResponse(file_path)
         return FileResponse(frontend_path / "index.html")
+else:
+    # Fallback if frontend build is missing
+    @app.get("/", include_in_schema=False)
+    async def serve_root():
+        return {"error": "Frontend build not found. Please check deployment logs."}
