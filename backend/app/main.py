@@ -1,9 +1,11 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.middleware import Middleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from .config import settings
 from .database import Base, engine
@@ -37,15 +39,6 @@ upload_path.mkdir(parents=True, exist_ok=True)
 
 # Mount static frontend files
 frontend_path = Path(__file__).resolve().parents[1] / "frontend" / "out"
-if frontend_path.exists():
-    app.mount("/static", StaticFiles(directory=str(frontend_path)), name="static")
-
-    @app.get("/{full_path:path}")
-    def serve_frontend(full_path: str):
-        file_path = frontend_path / full_path
-        if file_path.exists() and file_path.is_file():
-            return FileResponse(file_path)
-        return FileResponse(frontend_path / "index.html")
 
 app.include_router(auth.router)
 app.include_router(deposits.router)
@@ -55,3 +48,20 @@ app.include_router(admin.router)
 @app.get("/api/health")
 def health():
     return {"ok": True}
+
+# Serve frontend - must be after API routes
+if frontend_path.exists():
+    # Serve static files
+    app.mount("/_next", StaticFiles(directory=str(frontend_path / "_next")), name="next")
+    app.mount("/static", StaticFiles(directory=str(frontend_path)), name="static")
+
+    @app.get("/", include_in_schema=False)
+    async def serve_root():
+        return FileResponse(frontend_path / "index.html")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_frontend(full_path: str):
+        file_path = frontend_path / full_path
+        if file_path.exists() and file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(frontend_path / "index.html")
