@@ -1,0 +1,70 @@
+@import url('https://googleapis.com');
+@import "tailwindcss";
+
+
+:root {
+  --bg: #0f0f14;
+  --surface: #17171f;
+  --surface2: #1e1e2a;
+  --surface3: #242433;
+  --borderCustom: #2a2a3a;
+  --primaryCustom: #a855f7;
+  --accentCustom: #f59e0b;
+  --greenCustom: #10b981;
+  --redCustom: #ef4444;
+  --textCustom: #f1f0ff;
+  --mutedCustom: #7b7a95;
+  --muted2Custom: #4a4a65;
+}
+
+@theme {
+  /* Design Tokens mapped to your exact color structure */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface2: var(--surface2);
+  --color-surface3: var(--surface3);
+  --color-borderCustom: var(--borderCustom);
+  --color-primaryCustom: var(--primaryCustom);
+  --color-accentCustom: var(--accentCustom);
+  --color-greenCustom: var(--greenCustom);
+  --color-redCustom: var(--redCustom);
+  --color-textCustom: var(--textCustom);
+  --color-mutedCustom: var(--mutedCustom);
+  --color-muted2Custom: var(--muted2Custom);
+
+  /* Typography configurations */
+  --font-sans: 'Inter', sans-serif;
+  --font-space: 'Space Grotesk', sans-serif;
+
+  /* Recreated custom entry animations from your HTML markup */
+  --animate-fade-down: fadeDown 0.5s ease both;
+  --animate-fade-up: fadeUp 0.55s ease both;
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Base resets to enforce your background across the entire viewport */
+body {
+  background-color: var(--bg);
+  color: var(--textCustom);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Custom Utility Class to hide scrollbars completely */
+.scrollbar-none {
+  scrollbar-width: none; /* Hides scrollbar on Firefox */
+  -ms-overflow-style: none; /* Hides scrollbar on IE/Edge */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none; /* Hides scrollbar on Chrome, Safari, and Opera */
+}

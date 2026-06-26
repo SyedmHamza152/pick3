@@ -1,0 +1,14 @@
+backend/.venv
+backend/uploads
+backend/.env
+.git
+.gitignore
+.cursor
+__pycache__
+*.pyc
+.pytest_cache
+.DS_Store
+*.md
+!DEPLOY.md
+run.ps1
+terminals

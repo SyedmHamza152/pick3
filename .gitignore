@@ -1,0 +1,20 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Secrets & local data
+backend/.env
+*.env.local
+
+# Uploads (user deposit screenshots)
+backend/uploads/
+
+# OS / IDE
+.DS_Store
+.cursor/
+terminals/
+
+# Docker local volumes (optional)
+.env

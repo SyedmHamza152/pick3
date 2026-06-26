@@ -1,0 +1,11 @@
+# https://railway.app — New Project → Deploy from GitHub
+# Set env vars in Railway dashboard (see DEPLOY.md)
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"

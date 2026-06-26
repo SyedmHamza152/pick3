@@ -1,0 +1,34 @@
+# https://render.com — connect GitHub repo → Blueprint deploy
+# Docs: see DEPLOY.md
+
+services:
+  - type: web
+    name: lottery
+    runtime: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /api/health
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: APP_PUBLIC_URL
+        sync: false
+      - key: CORS_ORIGINS
+        value: ""
+      - key: UPLOAD_DIR
+        value: ./uploads
+      - key: PKR_PER_RIYAL
+        value: "75"
+      - key: STRAIGHT_PRIZE_MULTIPLIER
+        value: "400"
+      - key: RUMBLE_PRIZE_MULTIPLIER
+        value: "80"
+      - key: MAX_UPLOAD_MB
+        value: "5"
+      - key: PORT
+        value: "8000"
