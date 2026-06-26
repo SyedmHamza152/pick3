@@ -1,4 +1,12 @@
 # Production image — works on Render, Railway, Fly.io, any Docker host
+FROM node:20-alpine AS frontend-builder
+
+WORKDIR /app/frontend
+COPY frontend/package.json frontend/package-lock.json* ./
+RUN npm ci
+COPY frontend ./
+RUN npm run build
+
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -16,8 +24,9 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 
 COPY backend/app backend/app
 COPY backend/scripts backend/scripts
-COPY frontend frontend
 COPY db db
+
+COPY --from=frontend-builder /app/frontend/out ./frontend/out
 
 WORKDIR /app/backend
 

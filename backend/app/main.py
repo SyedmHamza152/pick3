@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from .config import settings
 from .database import Base, engine
@@ -12,7 +14,7 @@ from .routes import auth, deposits, tickets, admin
 async def lifespan(app: FastAPI):
     url = settings.public_url or f"http://127.0.0.1:{settings.PORT}/"
     print(f"\n  Backend API running at:\n  {url}")
-    print(f"  Frontend should run at http://localhost:3000\n")
+    print(f"  Frontend served from same URL\n")
     yield
 
 
@@ -32,6 +34,18 @@ upload_path = Path(settings.UPLOAD_DIR)
 if not upload_path.is_absolute():
     upload_path = Path(__file__).resolve().parents[1] / upload_path
 upload_path.mkdir(parents=True, exist_ok=True)
+
+# Mount static frontend files
+frontend_path = Path(__file__).resolve().parents[1] / "frontend" / "out"
+if frontend_path.exists():
+    app.mount("/static", StaticFiles(directory=str(frontend_path)), name="static")
+
+    @app.get("/{full_path:path}")
+    def serve_frontend(full_path: str):
+        file_path = frontend_path / full_path
+        if file_path.exists() and file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(frontend_path / "index.html")
 
 app.include_router(auth.router)
 app.include_router(deposits.router)
