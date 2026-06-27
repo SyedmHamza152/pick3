@@ -113,7 +113,7 @@ export default function UsersView() {
                 <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Tickets</th>
                 <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Deposits</th>
                 <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Wins</th>
-                <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Joined <span className='text-[6px]'> (Day/Month/Year)</span></th>
+                <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Joined <br/><span className='text-[11px]'> (Day/Month/Year)</span></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-borderCustom/40">
