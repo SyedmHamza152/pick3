@@ -27,9 +27,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   };
 
-  if (!isAuthenticated) {
-    return null;
-  }
+  // if (!isAuthenticated) {
+  //   return null;
+  // }
 
   return (
     <div className="min-h-screen bg-[#1A202C] text-[#f1f0ff] font-sans antialiased">

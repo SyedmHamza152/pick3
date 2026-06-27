@@ -57,7 +57,7 @@ export default function Signup() {
       });
 
       // Route directly to user workspace
-      router.push('/dashboard');
+      router.push('/login');
     } catch (err: any) {
       setMsgText(err.message || 'An error occurred');
       setShowMsg(true);
