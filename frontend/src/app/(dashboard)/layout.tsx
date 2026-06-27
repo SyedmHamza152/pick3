@@ -11,14 +11,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log('Auth check:', { token: auth.token, user: auth.user });
-    if (!auth.token || !auth.user) {
-      router.push('/login');
-    } else {
-      setIsAuthenticated(true);
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   console.log('Auth check:', { token: auth.token, user: auth.user });
+  //   if (!auth.token || !auth.user) {
+  //     router.push('/login');
+  //   } else {
+  //     setIsAuthenticated(true);
+  //   }
+  // }, [router]);
 
   const handleLogout = () => {
     if (typeof window !== 'undefined') {
