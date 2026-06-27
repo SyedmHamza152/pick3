@@ -1,13 +1,40 @@
 'use client';
 
-// 🟢 FIXED: Add 'username?: string;' to the TypeScript interfaces block
+import React, { useState, useEffect } from 'react';
+
 interface NavBarProps {
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
   username?: string; 
 }
 
-export default function NavBar({ isMobileOpen, setIsMobileOpen, username = 'Username' }: NavBarProps) {
+export default function NavBar({ isMobileOpen, setIsMobileOpen, username: propUsername }: NavBarProps) {
+  // 🟢 State tracker to hold the dynamic username session
+  const [displayUsername, setDisplayUsername] = useState<string>('Username');
+
+  // 🟢 Check local session cache stores directly inside the component
+  useEffect(() => {
+    // If the parent passed a valid name, use it immediately
+    if (propUsername && propUsername !== 'Username') {
+      setDisplayUsername(propUsername);
+      return;
+    }
+
+    // Otherwise, safely look up local storage keys directly on the client side
+    if (typeof window !== 'undefined') {
+      const storedUser = localStorage.getItem('user_info') || localStorage.getItem('lottery_user');
+      if (storedUser) {
+        try {
+          const parsed = JSON.parse(storedUser);
+          // Checks both potential backend key objects (.username or .user_id)
+          setDisplayUsername(parsed.username || parsed.user_id || 'Player');
+        } catch (e) {
+          console.error('Failed to parse user session cache:', e);
+        }
+      }
+    }
+  }, [propUsername]);
+
   const handleLogout = () => {
     if (typeof window !== 'undefined') {
       localStorage.clear();
@@ -33,9 +60,9 @@ export default function NavBar({ isMobileOpen, setIsMobileOpen, username = 'User
       </button>
 
       <div className="flex items-center gap-3">
-        {/* 🟢 FIXED: Reads the username directly from the layout props cleanly now */}
+        {/* 🟢 FIXED: Outputs displayUsername which checks both props and localStorage safely */}
         <div className="bg-[#1e1e2a] border border-[#2a2a3a] px-3.5 py-1.5 rounded-full text-xs font-semibold truncate max-w-[180px]">
-          👤 {username}
+          👤 {displayUsername}
         </div>
         <button
           onClick={handleLogout}

@@ -112,13 +112,31 @@ export default function WalletView() {
           <label className="block text-[12px] font-bold text-[#7b7a95] mb-2 uppercase tracking-[0.5px]">
             USER ID / MEMBER ID
           </label>
-          <input
+                    <input
             id="balUserId"
             className="w-full bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] px-4 py-3 rounded-[12px] text-[15px] outline-none placeholder:text-[#7b7a95]/40 focus:border-[#a855f7]"
-            placeholder="e.g. LOT000042"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="LOT000042"
+            value={searchQuery || 'LOT'} // Fallback defaults to 'LOT' so it's visible instantly
+            onChange={(e) => {
+              let inputVal = e.target.value;
+
+              // 1. Force the string to always start with 'LOT' (case-insensitive conversion)
+              if (!inputVal.toUpperCase().startsWith('LOT')) {
+                // If they try to clear or overwrite it, append their input to 'LOT'
+                const cleanDigits = inputVal.replace(/[^0-9]/g, ''); // Extract numbers only
+                inputVal = `LOT${cleanDigits}`;
+              } else {
+                // 2. If it starts with 'LOT', ensure anything typed after it is strictly numbers
+                const prefix = inputVal.substring(0, 3).toUpperCase(); // Keep 'LOT' safe
+                const remainder = inputVal.substring(3).replace(/[^0-9]/g, ''); // Clear non-digits
+                inputVal = `${prefix}${remainder}`;
+              }
+
+              // 3. Update the state variable with the forced 'LOT' structure
+              setSearchQuery(inputVal);
+            }}
           />
+
         </div>
       </div>
       <button
