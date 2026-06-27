@@ -41,9 +41,9 @@ export default function Home() {
 
       {/* Navigation Bar Element */}
       <nav className="flex items-center justify-between px-8 py-[1.2rem] border-b border-borderCustom bg-surface/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="font-space text-[22px] text-textCustom tracking-[-0.3px]">
+        <a href="/" className="cursor-pointer font-space text-[22px] text-textCustom tracking-[-0.3px]">
           Thai<span className="text-primaryCustom"> Lotto</span>
-        </div>
+        </a>
         <div className="flex gap-2">
           <Link href="/login" className="px-5 py-2 rounded-xl text-sm font-semibold cursor-pointer border border-borderCustom bg-transparent text-textCustom transition-all duration-180 inline-block hover:bg-surface2">
             Login

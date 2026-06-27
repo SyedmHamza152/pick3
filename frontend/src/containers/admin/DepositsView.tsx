@@ -142,105 +142,129 @@ export default function DepositsView() {
         </button>
       </div>
 
-      {/* ── DATA LOG TABLE ── */}
-      <div className="overflow-x-auto scrollbar-none">
-        <table className="w-full border-collapse text-xs min-w-[720px]">
-          <thead>
-            <tr className="border-b border-borderCustom pt-5">
-              {/* 🟢 FIXED: Switched column text alignment properties to explicit text-center */}
-              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">ID</th>
-              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">User</th>
-              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">PKR</th>
-              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">SAR credit</th>
-              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Screenshot</th>
-              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Status</th>
-              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Date</th>
-              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Action</th>
-            </tr>
-          </thead>
-          <tbody id="depRows" className="divide-y divide-borderCustom/40">
-            {deposits.length > 0 ? (
-              deposits.map((d) => (
-                /* 🟢 FIXED: Added text-center alignment modifier directly into the row container */
-                <tr key={d.deposit_id} className="hover:bg-surface2/50 transition-colors text-center">
-                  <td className="py-4 text-center text-textCustom font-mono">#{d.deposit_id}</td>
-                  <td className="py-4 text-center text-textCustom">
-                    <span className="font-semibold block">{d.public_id || ''}</span>
-                    <span className="text-textCustom/40">@{d.username || d.user_id}</span>
-                  </td>
-                  <td className="py-4 text-center text-textCustom font-medium">{fmtPkr(d.amount_pkr)}</td>
-                  <td className="py-4 text-center text-greenCustom font-bold">{fmtRiyal(d.amount_riyal)}</td>
-                  <td className="py-4">
-                    <div className="flex justify-center">
-                      {imageBlobs[d.deposit_id] ? (
-                        <a href={imageBlobs[d.deposit_id]} target="_blank" rel="noreferrer">
-                          <img
-                            className="w-[52px] h-[52px] object-cover rounded-lg border border-borderCustom hover:border-primaryCustom transition-all"
-                            src={imageBlobs[d.deposit_id]}
-                            alt="Receipt thumbnail"
-                          />
-                        </a>
-                      ) : (
-                        <div className="w-[52px] h-[52px] bg-surface3 border border-borderCustom rounded-lg flex items-center justify-center text-[10px] text-textCustom/30">
-                          No Pic
-                        </div>
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-4 text-center">
-                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase ${d.status === 'approved'
-                        ? 'bg-greenCustom/15 text-greenCustom'
-                        : d.status === 'rejected'
-                          ? 'bg-redCustom/15 text-redCustom'
-                          : 'bg-amber-500/15 text-amber-500'
-                      }`}>
-                      {d.status}
+            {/* ── HIGH UTILITY RESPONSIVE CARD DASHBOARD GRID (Replaces rigid table format entirely) ── */}
+      <div className="w-full">
+        {deposits.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {deposits.map((d) => (
+              <div 
+                key={d.deposit_id} 
+                className="bg-surface2 border border-borderCustom/60 hover:border-primaryCustom/40 rounded-2xl p-5 shadow-sm transition-all duration-200 flex flex-col justify-between space-y-4"
+              >
+                {/* 1. Card Header: Transaction Identification & Status Badge */}
+                <div className="flex items-center justify-between border-b border-borderCustom/30 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-textCustom/40 uppercase tracking-wider block">ID</span>
+                    <span className="text-textCustom font-mono font-bold text-sm bg-surface3 px-2 py-0.5 rounded-lg border border-borderCustom/40">
+                      #{d.deposit_id}
                     </span>
-                  </td>
-                  <td className="py-4 text-center text-textCustom/60 whitespace-nowrap">{fmtDate(d.created_at)}</td>
-                  <td className="py-4">
-                    {/* 🟢 FIXED: Added justify-center to keep buttons centered inside the wider column */}
-                    <div className="flex flex-wrap gap-1.5 justify-center">
-                      {d.status === 'pending' && (
-                        <>
-                          <button
-                            type="button"
-                            className="px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-white bg-gradient-to-br from-greenCustom to-[#059669] hover:shadow-[0_4px_12px_rgba(16,185,129,0.3)] border-none"
-                            onClick={() => handleApprove(d.deposit_id)}
-                          >
-                            Approve
-                          </button>
-                          <button
-                            type="button"
-                            className="px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-white bg-gradient-to-br from-redCustom to-[#dc2626] hover:shadow-[0_4px_12px_rgba(239,68,68,0.3)] border-none"
-                            onClick={() => handleReject(d.deposit_id)}
-                          >
-                            Reject
-                          </button>
-                        </>
-                      )}
-                      <button
-                        type="button"
-                        className="px-2.5 py-1.5 rounded-xl text-xs font-medium bg-surface3 border border-borderCustom text-textCustom hover:bg-surface2 cursor-pointer transition-all"
-                        onClick={() => handleDeleteScreenshot(d.deposit_id)}
-                        title="Delete screenshot file from server storage"
-                      >
-                        Del pic
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={8} className="py-8 text-center text-mutedCustom text-sm italic">
-                  Nothing here.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  </div>
+                  
+                  <span className={`inline-block px-3 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wide ${
+                    d.status === 'approved' 
+                      ? 'bg-greenCustom/15 text-greenCustom' 
+                      : d.status === 'rejected' 
+                      ? 'bg-redCustom/15 text-redCustom' 
+                      : 'bg-amber-500/15 text-amber-500'
+                  }`}>
+                    {d.status}
+                  </span>
+                </div>
 
+                {/* 2. Main Content Layout Split Area */}
+                <div className="grid grid-cols-3 gap-3 items-center py-1">
+                  
+                  {/* User Profile Info Segment */}
+                  <div className="col-span-2 space-y-1">
+                    <span className="text-textCustom/40 text-[10px] block uppercase font-bold tracking-wider">User Account</span>
+                    <span className="text-textCustom font-bold block truncate text-[14px]">
+                      {d.public_id || '—'}
+                    </span>
+                    <span className="text-textCustom/50 text-xs block truncate">
+                      @{d.username || d.user_id}
+                    </span>
+                  </div>
+
+                  {/* Screenshot Image Preview Segment */}
+                  <div className="flex justify-end">
+                    {imageBlobs[d.deposit_id] ? (
+                      <a href={imageBlobs[d.deposit_id]} target="_blank" rel="noreferrer" title="Click to view full screen screenshot receipt">
+                        <img 
+                          className="w-[56px] h-[56px] object-cover rounded-xl border border-borderCustom hover:border-primaryCustom hover:scale-105 active:scale-95 transition-all shadow-inner shadow-black/10" 
+                          src={imageBlobs[d.deposit_id]} 
+                          alt="Receipt thumbnail"
+                        />
+                      </a>
+                    ) : (
+                      <div className="w-[56px] h-[56px] bg-surface3 border border-dashed border-borderCustom rounded-xl flex flex-col items-center justify-center text-[9px] font-semibold text-textCustom/30 tracking-tight leading-none text-center p-1">
+                        🖼️<span className="mt-1">No Pic</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* 3. Operational Ledger Value Parameters Strip */}
+                <div className="grid grid-cols-2 gap-4 bg-surface3/40 border border-borderCustom/40 px-4 py-3 rounded-xl text-xs">
+                  <div>
+                    <span className="text-textCustom/40 text-[10px] block uppercase font-bold tracking-wider mb-0.5">PKR Amount</span>
+                    <span className="text-textCustom font-semibold text-sm">{fmtPkr(d.amount_pkr)}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-textCustom/40 text-[10px] block uppercase font-bold tracking-wider mb-0.5">SAR Credit</span>
+                    <span className="text-greenCustom font-bold text-sm">{fmtRiyal(d.amount_riyal)}</span>
+                  </div>
+                </div>
+
+                {/* 4. Timestamp Logging & Action Elements Row */}
+                <div className="flex flex-col sm:flex-row gap-3 items-center justify-between pt-3 border-t border-borderCustom/30 text-xs">
+                  <div className="text-left w-full sm:w-auto">
+                    <span className="text-textCustom/40 text-[9px] block uppercase font-bold tracking-wider">Date Logged</span>
+                    <span className="text-textCustom/60 font-medium text-[11px]">{fmtDate(d.created_at)}</span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 w-full sm:w-auto justify-end">
+                    {d.status === 'pending' && (
+                      <>
+                        <button 
+                          type="button"
+                          className="px-3.5 py-2 rounded-xl text-xs font-bold cursor-pointer text-white bg-gradient-to-br from-greenCustom to-[#059669] hover:shadow-[0_4px_12px_rgba(16,185,129,0.25)] border-none active:scale-95 transition-all"
+                          onClick={() => handleApprove(d.deposit_id)}
+                        >
+                          Approve
+                        </button>
+                        <button 
+                          type="button"
+                          className="px-3.5 py-2 rounded-xl text-xs font-bold cursor-pointer text-white bg-gradient-to-br from-redCustom to-[#dc2626] hover:shadow-[0_4px_12px_rgba(239,68,68,0.25)] border-none active:scale-95 transition-all"
+                          onClick={() => handleReject(d.deposit_id)}
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+                    <button 
+                      type="button"
+                      className="p-2 bg-surface3 border border-borderCustom hover:border-redCustom/40 hover:text-redCustom text-textCustom/70 rounded-xl transition-all cursor-pointer"
+                      onClick={() => handleDeleteScreenshot(d.deposit_id)}
+                      title="Delete screenshot file from server storage"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="py-12 bg-surface2/30 border border-dashed border-borderCustom rounded-2xl text-center text-mutedCustom text-sm font-medium italic">
+            No deposits logs found matching the selected filters.
+          </div>
+        )}
       </div>
     </div>
   );
