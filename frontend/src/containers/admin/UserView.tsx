@@ -113,7 +113,7 @@ export default function UsersView() {
                 <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Tickets</th>
                 <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Deposits</th>
                 <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Wins</th>
-                <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Joined</th>
+                <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Joined <span className='text-[6px]'> (Day/Month/Year)</span></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-borderCustom/40">
@@ -364,7 +364,7 @@ export default function UsersView() {
 
                   {/* ── DESKTOP SCREEN RESOLUTIONS: Perfectly Centered Grid Table ── */}
                   <div className="hidden md:block overflow-x-auto scrollbar-none">
-                                        <table className="w-full border-collapse text-xs">
+                    <table className="w-full border-collapse text-xs">
                       <thead>
                         <tr className="border-b border-borderCustom">
                           {/* Changed all column header placements to explicit center layouts */}
@@ -377,26 +377,16 @@ export default function UsersView() {
                       </thead>
                       <tbody className="divide-y divide-borderCustom/40">
                         {selectedUser.wins && selectedUser.wins.length > 0 ? (
-                          selectedUser.wins.map((win: any) => {
-                            // 🟢 FIXED: Create a local DD/MM/YYYY date formatter for the table cell
-                            const d = new Date(win.announced_date);
-                            const day = String(d.getDate()).padStart(2, '0');
-                            const month = String(d.getMonth() + 1).padStart(2, '0'); // Months start at 0
-                            const year = d.getFullYear();
-                            const formattedDmyDate = isNaN(d.getTime()) ? '—' : `${day}/${month}/${year}`;
-
-                            return (
-                              <tr key={win.winner_id} className="hover:bg-surface2/30 transition-colors text-center">
-                                {/* Centered all corresponding data items cleanly across rows */}
-                                <td className="py-2 text-center text-textCustom font-mono">#{win.winner_id}</td>
-                                <td className="py-2 text-center text-[#f59e0b] font-bold tracking-wider">{win.w1} - {win.w2} - {win.w3}</td>
-                                <td className="py-2 text-center text-textCustom capitalize">{win.ticket_type}</td>
-                                <td className="py-2 text-center text-[#10b981] font-bold">{fmtRiyal(win.prize_amount)}</td>
-                                {/* 🟢 FIXED: Renders the cleaned up custom text output string directly here */}
-                                <td className="py-2 text-center text-textCustom/70 whitespace-nowrap">{formattedDmyDate}</td>
-                              </tr>
-                            );
-                          })
+                          selectedUser.wins.map((win: any) => (
+                            <tr key={win.winner_id} className="hover:bg-surface2/30 transition-colors text-center">
+                              {/* Centered all corresponding data items cleanly across rows */}
+                              <td className="py-2 text-center text-textCustom font-mono">#{win.winner_id}</td>
+                              <td className="py-2 text-center text-[#f59e0b] font-bold tracking-wider">{win.w1} - {win.w2} - {win.w3}</td>
+                              <td className="py-2 text-center text-textCustom capitalize">{win.ticket_type}</td>
+                              <td className="py-2 text-center text-[#10b981] font-bold">{fmtRiyal(win.prize_amount)}</td>
+                              <td className="py-2 text-center text-textCustom/70 whitespace-nowrap">{fmtDate(win.announced_date)}</td>
+                            </tr>
+                          ))
                         ) : (
                           <tr>
                             <td colSpan={5} className="py-4 text-center text-textCustom/40 italic">No wins found</td>
@@ -404,7 +394,6 @@ export default function UsersView() {
                         )}
                       </tbody>
                     </table>
-
                   </div>
 
                   {/* ── MOBILE SCREEN RESOLUTIONS: Beautifully Stacked Details Cards ── */}
