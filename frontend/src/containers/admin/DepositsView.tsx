@@ -39,7 +39,7 @@ export default function DepositsView() {
     try {
       const rows = await api(`/api/admin/deposits?status=${filter}`);
       setDeposits(rows || []);
-      
+
       // Fetch screenshots as blobs to attach bearer auth header token securely
       if (rows && rows.length > 0) {
         rows.forEach(async (d: DepositItem) => {
@@ -111,19 +111,18 @@ export default function DepositsView() {
 
       {/* Dynamic Status Notification Alert Box */}
       {showMsg && (
-        <div className={`p-4 rounded-xl text-[13.5px] font-medium mb-4 border transition-all ${
-          isSuccess 
-            ? 'bg-greenCustom/10 border-greenCustom/30 text-[#6ee7b7]' 
+        <div className={`p-4 rounded-xl text-[13.5px] font-medium mb-4 border transition-all ${isSuccess
+            ? 'bg-greenCustom/10 border-greenCustom/30 text-[#6ee7b7]'
             : 'bg-redCustom/10 border-redCustom/30 text-[#fca5a5]'
-        }`}>
+          }`}>
           {msgText}
         </div>
       )}
 
       {/* ── CONTROL FILTERING TOOLBAR ── */}
       <div className="flex flex-wrap items-center gap-3 mb-6 bg-surface2/40 p-4 border border-borderCustom rounded-xl">
-        <select 
-          id="depFilter" 
+        <select
+          id="depFilter"
           className="bg-surface2 border border-borderCustom text-textCustom px-4 py-2 rounded-xl text-sm outline-none focus:border-primaryCustom cursor-pointer w-full sm:w-[200px]"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
@@ -133,8 +132,8 @@ export default function DepositsView() {
           <option value="rejected">Rejected</option>
           <option value="all">All</option>
         </select>
-        
-        <button 
+
+        <button
           className="px-5 py-2.5 bg-surface3 text-textCustom font-semibold text-[13.5px] rounded-xl border border-borderCustom cursor-pointer hover:bg-surface2 transition-all disabled:opacity-50"
           onClick={loadDeposits}
           disabled={loading}
@@ -148,65 +147,71 @@ export default function DepositsView() {
         <table className="w-full border-collapse text-xs min-w-[720px]">
           <thead>
             <tr className="border-b border-borderCustom pt-5">
-              <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">ID</th>
-              <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">User</th>
-              <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">PKR</th>
-              <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">SAR credit</th>
-              <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Screenshot</th>
-              <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Status</th>
-              <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Date</th>
-              <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Action</th>
+              {/* 🟢 FIXED: Switched column text alignment properties to explicit text-center */}
+              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">ID</th>
+              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">User</th>
+              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">PKR</th>
+              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">SAR credit</th>
+              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Screenshot</th>
+              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Status</th>
+              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Date</th>
+              <th className="text-center pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">Action</th>
             </tr>
           </thead>
           <tbody id="depRows" className="divide-y divide-borderCustom/40">
             {deposits.length > 0 ? (
               deposits.map((d) => (
-                <tr key={d.deposit_id} className="hover:bg-surface2/50 transition-colors">
-                  <td className="py-4 text-textCustom font-mono">#{d.deposit_id}</td>
-                  <td className="py-4 text-textCustom">
+                /* 🟢 FIXED: Added text-center alignment modifier directly into the row container */
+                <tr key={d.deposit_id} className="hover:bg-surface2/50 transition-colors text-center">
+                  <td className="py-4 text-center text-textCustom font-mono">#{d.deposit_id}</td>
+                  <td className="py-4 text-center text-textCustom">
                     <span className="font-semibold block">{d.public_id || ''}</span>
                     <span className="text-textCustom/40">@{d.username || d.user_id}</span>
                   </td>
-                  <td className="py-4 text-textCustom font-medium">{fmtPkr(d.amount_pkr)}</td>
-                  <td className="py-4 text-greenCustom font-bold">{fmtRiyal(d.amount_riyal)}</td>
+                  <td className="py-4 text-center text-textCustom font-medium">{fmtPkr(d.amount_pkr)}</td>
+                  <td className="py-4 text-center text-greenCustom font-bold">{fmtRiyal(d.amount_riyal)}</td>
                   <td className="py-4">
-                    {imageBlobs[d.deposit_id] ? (
-                      <a href={imageBlobs[d.deposit_id]} target="_blank" rel="noreferrer">
-                        <img 
-                          className="w-[52px] h-[52px] object-cover rounded-lg border border-borderCustom hover:border-primaryCustom transition-all" 
-                          src={imageBlobs[d.deposit_id]} 
-                          alt="Receipt thumbnail"
-                        />
-                      </a>
-                    ) : (
-                      <div className="w-[52px] h-[52px] bg-surface3 border border-borderCustom rounded-lg flex items-center justify-center text-[10px] text-textCustom/30">
-                        No Pic
-                      </div>
-                    )}
+                    <div className="flex justify-center">
+                      {imageBlobs[d.deposit_id] ? (
+                        <a href={imageBlobs[d.deposit_id]} target="_blank" rel="noreferrer">
+                          <img
+                            className="w-[52px] h-[52px] object-cover rounded-lg border border-borderCustom hover:border-primaryCustom transition-all"
+                            src={imageBlobs[d.deposit_id]}
+                            alt="Receipt thumbnail"
+                          />
+                        </a>
+                      ) : (
+                        <div className="w-[52px] h-[52px] bg-surface3 border border-borderCustom rounded-lg flex items-center justify-center text-[10px] text-textCustom/30">
+                          No Pic
+                        </div>
+                      )}
+                    </div>
                   </td>
-                  <td className="py-4">
-                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase ${
-                      d.status === 'approved' 
-                        ? 'bg-greenCustom/15 text-greenCustom' 
-                        : d.status === 'rejected' 
-                        ? 'bg-redCustom/15 text-redCustom' 
-                        : 'bg-amber-500/15 text-amber-500'
-                    }`}>
+                  <td className="py-4 text-center">
+                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase ${d.status === 'approved'
+                        ? 'bg-greenCustom/15 text-greenCustom'
+                        : d.status === 'rejected'
+                          ? 'bg-redCustom/15 text-redCustom'
+                          : 'bg-amber-500/15 text-amber-500'
+                      }`}>
                       {d.status}
                     </span>
                   </td>
-                  <td className="py-4 text-textCustom/60 whitespace-nowrap">{fmtDate(d.created_at)}</td>
+                  <td className="py-4 text-center text-textCustom/60 whitespace-nowrap">{fmtDate(d.created_at)}</td>
                   <td className="py-4">
-                    <div className="flex flex-wrap gap-1.5">
+                    {/* 🟢 FIXED: Added justify-center to keep buttons centered inside the wider column */}
+                    <div className="flex flex-wrap gap-1.5 justify-center">
                       {d.status === 'pending' && (
                         <>
-                          <button 
+                          <button
+                            type="button"
                             className="px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-white bg-gradient-to-br from-greenCustom to-[#059669] hover:shadow-[0_4px_12px_rgba(16,185,129,0.3)] border-none"
                             onClick={() => handleApprove(d.deposit_id)}
                           >
                             Approve
                           </button>
-                          <button 
+                          <button
+                            type="button"
                             className="px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-white bg-gradient-to-br from-redCustom to-[#dc2626] hover:shadow-[0_4px_12px_rgba(239,68,68,0.3)] border-none"
                             onClick={() => handleReject(d.deposit_id)}
                           >
@@ -214,7 +219,8 @@ export default function DepositsView() {
                           </button>
                         </>
                       )}
-                      <button 
+                      <button
+                        type="button"
                         className="px-2.5 py-1.5 rounded-xl text-xs font-medium bg-surface3 border border-borderCustom text-textCustom hover:bg-surface2 cursor-pointer transition-all"
                         onClick={() => handleDeleteScreenshot(d.deposit_id)}
                         title="Delete screenshot file from server storage"
@@ -234,6 +240,7 @@ export default function DepositsView() {
             )}
           </tbody>
         </table>
+
       </div>
     </div>
   );

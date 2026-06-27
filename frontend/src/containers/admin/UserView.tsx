@@ -129,7 +129,7 @@ export default function UsersView() {
                   <td className="py-3.5 text-[#10b981] text-center font-bold">{fmtRiyal(user.account_balance)}</td>
                   <td className="py-3.5 text-center text-textCustom">{user.ticket_count}</td>
                   <td className="py-3.5 text-center text-textCustom">{user.deposit_count}</td>
-                  <td className="py-3.5 text-[#f59e0b]text-center font-semibold">{user.win_count}</td>
+                  <td className="py-3.5 text-[#f59e0b] text-center font-semibold">{user.win_count}</td>
                   <td className="py-3.5 text-center text-textCustom/70 whitespace-nowrap">{fmtDate(user.created_at)}</td>
                 </tr>
               ))}
