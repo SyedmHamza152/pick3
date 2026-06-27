@@ -99,37 +99,61 @@ export default function AnnounceView() {
 
           <form onSubmit={handleSubmit} id="winForm" className="space-y-4">
             {/* Three digit layout entry slots */}
-            <div>
+                        <div>
               <label className="block text-[12px] font-bold text-[#7b7a95] mb-2 uppercase tracking-[0.5px]">
                 Winning numbers (0–9 each)
               </label>
               <div className="flex gap-3">
                 <input 
+                  id="w1Input"
                   className="w-full bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] py-3 px-2 rounded-[12px] text-center text-2xl font-bold outline-none focus:border-[#a855f7]"
                   name="w1" type="number" min="0" max="9" required
-                  value={w1} onChange={(e) => setW1(e.target.value)}
+                  value={w1} 
+                  onChange={(e) => {
+                    const val = e.target.value.slice(-1); // Lock input context to a single digit
+                    setW1(val);
+                    if (val !== '') {
+                      // 🟢 Auto-focus to the second box
+                      document.getElementById('w2Input')?.focus();
+                    }
+                  }}
                 />
                 <input 
+                  id="w2Input"
                   className="w-full bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] py-3 px-2 rounded-[12px] text-center text-2xl font-bold outline-none focus:border-[#a855f7]"
                   name="w2" type="number" min="0" max="9" required
-                  value={w2} onChange={(e) => setW2(e.target.value)}
+                  value={w2} 
+                  onChange={(e) => {
+                    const val = e.target.value.slice(-1); // Lock input context to a single digit
+                    setW2(val);
+                    if (val !== '') {
+                      // 🟢 Auto-focus to the third box
+                      document.getElementById('w3Input')?.focus();
+                    }
+                  }}
                 />
                 <input 
+                  id="w3Input"
                   className="w-full bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] py-3 px-2 rounded-[12px] text-center text-2xl font-bold outline-none focus:border-[#a855f7]"
                   name="w3" type="number" min="0" max="9" required
-                  value={w3} onChange={(e) => setW3(e.target.value)}
+                  value={w3} 
+                  onChange={(e) => {
+                    const val = e.target.value.slice(-1); // Lock input context to a single digit
+                    setW3(val);
+                  }}
                 />
               </div>
             </div>
 
             {/* Split Options Row Columns Layout */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
+                            <div>
                 <label className="block text-[12px] font-bold text-[#7b7a95] mb-2 uppercase tracking-[0.5px]">
                   Ticket type
                 </label>
+                {/* 🟢 FIXED: Removed appearance-none class token to restore the natural dropdown arrow indicator */}
                 <select 
-                  className="w-full h-[46px] bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] px-4 rounded-[12px] text-[15px] outline-none cursor-pointer appearance-none"
+                  className="w-full h-[46px] bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] px-4 rounded-[12px] text-[15px] outline-none cursor-pointer focus:border-[#a855f7]"
                   name="ticket_type"
                   value={ticketType}
                   onChange={(e) => setTicketType(e.target.value)}
@@ -138,6 +162,7 @@ export default function AnnounceView() {
                   <option value="rumble">Rumble</option>
                 </select>
               </div>
+
 
               <div>
                 <label className="block text-[12px] font-bold text-[#7b7a95] mb-2 uppercase tracking-[0.5px]">

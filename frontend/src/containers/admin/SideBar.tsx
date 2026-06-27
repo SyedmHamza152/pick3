@@ -11,17 +11,28 @@ interface SideBarProps {
 }
 
 export default function SideBar({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen }: SideBarProps) {
+  // Menu groupings explicitly split according to your required title categories
   const menuGroups = [
     {
-      title: 'Lottery Hub',
+      title: 'Overview / Control',
       items: [
         { id: 'users', title: 'Users', icon: '👥' },
-        { id: 'wallet', title: 'Wallet Balance', icon: '💰' },
+        { id: 'wallet', title: 'Manage Balance', icon: '💰' },
+      ],
+    },
+    {
+      title: 'Payments Management',
+      items: [
         { id: 'deposits', title: 'Pending Deposits', icon: '💳' },
-        { id: 'reports', title: 'Lottery Reports', icon: '📊' },
-        { id: 'screenshots', title: 'Deposit Screenshots', icon: '🖼️' },
+        { id: 'screenshots', title: 'Delete Screenshots', icon: '🖼️' },
+      ],
+    },
+    {
+      title: 'Lottery Management',
+      items: [
         { id: 'announce', title: 'Announce Winners', icon: '🏆' },
         { id: 'search', title: 'Search Winners', icon: '🔍' },
+        { id: 'reports', title: 'Lottery Reports', icon: '📊' },
       ],
     },
   ];
@@ -41,7 +52,7 @@ export default function SideBar({ activeTab, setActiveTab, isMobileOpen, setIsMo
         isMobileOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <a href={"/"} className="cursor-pointer p-5 pb-3 font-space text-xl font-bold border-b border-[#2a2a3a] flex items-center justify-between">
-          <span>Pick<span className="text-[#a855f7]">3</span> Panel</span>
+          <span>Thai<span className="text-[#a855f7]"> Lotto</span> Panel</span>
           <button 
             onClick={() => setIsMobileOpen(false)} 
             className="lg:hidden text-white text-2xl leading-none cursor-pointer p-1"
@@ -51,10 +62,11 @@ export default function SideBar({ activeTab, setActiveTab, isMobileOpen, setIsMo
         </a>
 
         <div className="py-4 space-y-4 flex flex-col justify-between h-[calc(100vh-65px)]">
-          <div>
+          <div className="space-y-4">
             {menuGroups.map((group, gIdx) => (
               <div key={gIdx}>
-                <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-[#ebebee]/60 px-5 mb-1">
+                {/* Category Group Sizing Titles */}
+                <div className="text-[10px] font-bold tracking-[1.2px] uppercase text-[#ebebee]/60 px-5 mb-1.5">
                   {group.title}
                 </div>
                 
@@ -89,7 +101,7 @@ export default function SideBar({ activeTab, setActiveTab, isMobileOpen, setIsMo
               onClick={logout}
               className="w-full flex items-center gap-3 py-2 px-3 rounded-xl text-[13px] font-medium text-red-400 hover:bg-red-500/10 transition-all text-left cursor-pointer"
             >
-              <span className="text-base w-5 text-center shrink-0">🚪</span>
+              <span className="text-base w-5 text-center shrink-0">🔓</span>
               Logout
             </button>
           </div>

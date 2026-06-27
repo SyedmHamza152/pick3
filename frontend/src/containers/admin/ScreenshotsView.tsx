@@ -60,7 +60,7 @@ export default function ScreenshotsView() {
       {/* ── CARD HEADER TITLE ── */}
       <div className="mb-4">
         <h3 className="font-space text-xl font-bold text-textCustom mb-1">
-          Deposit screenshots (local files)
+          Delete screenshots (local files)
         </h3>
         <p className="text-mutedCustom text-sm leading-relaxed">
           Images are stored on this server in <code className="bg-surface2 px-1.5 py-0.5 rounded text-redCustom">backend/uploads/</code>. Deposit records in Neon are kept; deleting files only removes the image files.

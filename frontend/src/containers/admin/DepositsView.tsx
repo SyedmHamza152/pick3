@@ -146,7 +146,7 @@ export default function DepositsView() {
       {/* ── DATA LOG TABLE ── */}
       <div className="overflow-x-auto scrollbar-none">
         <table className="w-full border-collapse text-xs min-w-[720px]">
-          <thead className=''>
+          <thead>
             <tr className="border-b border-borderCustom pt-5">
               <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">ID</th>
               <th className="text-left pb-3 text-[11px] font-semibold uppercase tracking-wider text-textCustom/60">User</th>
@@ -201,13 +201,13 @@ export default function DepositsView() {
                       {d.status === 'pending' && (
                         <>
                           <button 
-                            className="px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-white bg-gradient-to-br from-greenCustom to-[#059669] hover:shadow-[0_4px_12px_rgba(16,185,129,0.3)]"
+                            className="px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-white bg-gradient-to-br from-greenCustom to-[#059669] hover:shadow-[0_4px_12px_rgba(16,185,129,0.3)] border-none"
                             onClick={() => handleApprove(d.deposit_id)}
                           >
                             Approve
                           </button>
                           <button 
-                            className="px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-white bg-gradient-to-br from-redCustom to-[#dc2626] hover:shadow-[0_4px_12px_rgba(239,68,68,0.3)]"
+                            className="px-3 py-1.5 rounded-xl text-xs font-semibold cursor-pointer text-white bg-gradient-to-br from-redCustom to-[#dc2626] hover:shadow-[0_4px_12px_rgba(239,68,68,0.3)] border-none"
                             onClick={() => handleReject(d.deposit_id)}
                           >
                             Reject
