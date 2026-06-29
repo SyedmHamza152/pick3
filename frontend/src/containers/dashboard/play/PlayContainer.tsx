@@ -27,8 +27,9 @@ export default function PlayContainer() {
           setSelectedGame={setSelectedGame}
         />
 
+        {/* ✅ FIX: force remount so game state resets cleanly */}
         {selectedGame === '3up' && (
-          <ThreeUpGame />
+          <ThreeUpGame key={selectedGame} />
         )}
 
       </div>

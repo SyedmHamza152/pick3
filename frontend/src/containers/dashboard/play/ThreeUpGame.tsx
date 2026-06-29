@@ -10,7 +10,10 @@ export default function ThreeUpGame() {
   const [n1, setN1] = useState('');
   const [n2, setN2] = useState('');
   const [n3, setN3] = useState('');
-  const [ticketType, setTicketType] = useState('straight');
+
+  // ✅ CHANGED: single → multiple selection
+  const [ticketTypes, setTicketTypes] = useState<string[]>(['straight']);
+
   const [wager, setWager] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -40,20 +43,31 @@ export default function ThreeUpGame() {
       return;
     }
 
+    // ✅ NEW VALIDATION
+    if (ticketTypes.length === 0) {
+      displayMessage('Please select at least one lottery type.');
+      return;
+    }
+
     setSubmitting(true);
 
     try {
-      await api('/api/tickets/', {
-        method: 'POST',
-        body: {
-          n1: Number(n1),
-          n2: Number(n2),
-          n3: Number(n3),
-          ticket_type: ticketType,
-          amount_wagered: Number(wager),
-        },
-        auth: true,
-      });
+      // ✅ CHANGED: loop for multiple types
+      await Promise.all(
+        ticketTypes.map((type) =>
+          api('/api/tickets/', {
+            method: 'POST',
+            body: {
+              n1: Number(n1),
+              n2: Number(n2),
+              n3: Number(n3),
+              ticket_type: type,
+              amount_wagered: Number(wager),
+            },
+            auth: true,
+          })
+        )
+      );
 
       displayMessage('Bet placed successfully! Good luck!', true);
 
@@ -61,6 +75,7 @@ export default function ThreeUpGame() {
       setN2('');
       setN3('');
       setWager('');
+      setTicketTypes(['straight']); // reset default
     } catch (err: any) {
       displayMessage(err.message || 'Failed to place bet.');
     } finally {
@@ -141,14 +156,42 @@ export default function ThreeUpGame() {
         {/* CONFIG */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          <select
-            className="w-full h-[44px] bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] px-4 rounded-xl text-sm outline-none cursor-pointer"
-            value={ticketType}
-            onChange={(e) => setTicketType(e.target.value)}
-          >
-            <option value="straight">Straight (exact order) - 400x payout</option>
-            <option value="rumble">Rumble (any order) - 80x payout</option>
-          </select>
+          {/* ✅ CHANGED: checkbox UI instead of select */}
+          <div className="space-y-3">
+            <label className="block text-[11px] font-bold text-[#7b7a95] uppercase tracking-[0.5px]">
+              Lottery Type
+            </label>
+
+            <label className="flex items-center gap-2 text-[#f1f0ff] text-sm">
+              <input
+                type="checkbox"
+                checked={ticketTypes.includes('straight')}
+                onChange={(e) => {
+                  setTicketTypes((prev) =>
+                    e.target.checked
+                      ? [...prev, 'straight']
+                      : prev.filter((t) => t !== 'straight')
+                  );
+                }}
+              />
+              Straight (exact order) - 400x payout
+            </label>
+
+            <label className="flex items-center gap-2 text-[#f1f0ff] text-sm">
+              <input
+                type="checkbox"
+                checked={ticketTypes.includes('rumble')}
+                onChange={(e) => {
+                  setTicketTypes((prev) =>
+                    e.target.checked
+                      ? [...prev, 'rumble']
+                      : prev.filter((t) => t !== 'rumble')
+                  );
+                }}
+              />
+              Rumble (any order) - 80x payout
+            </label>
+          </div>
 
           <div>
             <input
