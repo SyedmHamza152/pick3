@@ -21,10 +21,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         } else {
           try {
             const user = JSON.parse(userStr);
-            if (!user || !user.is_admin) {
-              router.push('/dashboard');
-            } else {
+            if (user && user.is_admin) {
               setIsAuthenticated(true);
+            } else {
+              router.push('/dashboard');
             }
           } catch {
             router.push('/login');
@@ -34,8 +34,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     };
 
-    // Increased delay to ensure localStorage is available on mobile
-    const timer = setTimeout(checkAuth, 500);
+    // Reduced delay for faster page load
+    const timer = setTimeout(checkAuth, 100);
     return () => clearTimeout(timer);
   }, [router]);
 

@@ -31,9 +31,9 @@ export default function Login() {
             // Validate user has required fields
             if (user && user.user_id && user.username) {
               if (user.is_admin) {
-                router.replace('/admin');
+                router.push('/admin');
               } else {
-                router.replace('/dashboard');
+                router.push('/dashboard');
               }
               return;
             }
@@ -47,8 +47,8 @@ export default function Login() {
       setIsChecking(false);
     };
 
-    // Increased delay to ensure localStorage is available on mobile
-    const timer = setTimeout(checkAuthAndRedirect, 500);
+    // Reduced delay for faster page load
+    const timer = setTimeout(checkAuthAndRedirect, 100);
     return () => clearTimeout(timer);
   }, [router]);
 

@@ -24,7 +24,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         } else {
           try {
             const user = JSON.parse(userStr);
-            if (user) {
+            if (user && user.user_id) {
               setIsAuthenticated(true);
             } else {
               router.push('/login');
@@ -37,8 +37,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       }
     };
 
-    // Increased delay to ensure localStorage is available on mobile
-    const timer = setTimeout(checkAuth, 500);
+    // Reduced delay for faster page load
+    const timer = setTimeout(checkAuth, 100);
     return () => clearTimeout(timer);
   }, [router]);
 

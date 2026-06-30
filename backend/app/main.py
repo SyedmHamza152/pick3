@@ -62,13 +62,27 @@ if frontend_path.exists():
     app.mount("/_next", StaticFiles(directory=str(frontend_path / "_next")), name="next")
     app.mount("/static", StaticFiles(directory=str(frontend_path)), name="static")
 
+    # Serve HTML files for routes
     @app.get("/{full_path:path}", include_in_schema=False)
     async def serve_frontend(full_path: str = ""):
+        # Check if it's a static file (HTML, JS, CSS, etc.)
         if not full_path or full_path == "/":
             return FileResponse(frontend_path / "index.html")
+        
         file_path = frontend_path / full_path
+        
+        # If it's a file that exists, serve it
         if file_path.exists() and file_path.is_file():
             return FileResponse(file_path)
+        
+        # If it's a directory, try to serve index.html
+        if file_path.exists() and file_path.is_dir():
+            index_path = file_path / "index.html"
+            if index_path.exists():
+                return FileResponse(index_path)
+        
+        # For SPA routes (dashboard, profile, etc.), serve index.html
+        # This allows client-side routing to take over
         return FileResponse(frontend_path / "index.html")
 else:
     # Fallback if frontend build is missing
