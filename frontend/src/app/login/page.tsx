@@ -17,7 +17,7 @@ export default function Login() {
   const [showMsg, setShowMsg] = useState<boolean>(false);
   const [isChecking, setIsChecking] = useState<boolean>(true);
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated - only redirect if explicitly logged in
   useEffect(() => {
     const checkAuthAndRedirect = () => {
       if (typeof window !== 'undefined') {
@@ -25,19 +25,23 @@ export default function Login() {
           const token = localStorage.getItem('lottery_token');
           const userStr = localStorage.getItem('lottery_user');
           
-          if (token && userStr) {
+          // Only redirect if both token and valid user data exist
+          if (token && userStr && token.length > 10) {
             const user = JSON.parse(userStr);
-            if (user && user.user_id) {
+            // Validate user has required fields
+            if (user && user.user_id && user.username) {
               if (user.is_admin) {
-                router.push('/admin');
+                router.replace('/admin');
               } else {
-                router.push('/dashboard');
+                router.replace('/dashboard');
               }
               return;
             }
           }
         } catch {
-          // Invalid user data, stay on login
+          // Invalid user data, clear it and stay on login
+          localStorage.removeItem('lottery_token');
+          localStorage.removeItem('lottery_user');
         }
       }
       setIsChecking(false);

@@ -2,10 +2,42 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { auth } from '@/utils/api';
 
 export default function Home() {
+  const router = useRouter();
+  
   // Using an array of strings to reactively manage dynamic ball text states safely
   const [balls, setBalls] = useState<string[]>(['?', '?', '?']);
+
+  // Check auth and redirect if logged in
+  useEffect(() => {
+    const checkAuth = () => {
+      if (typeof window !== 'undefined') {
+        try {
+          const token = localStorage.getItem('lottery_token');
+          const userStr = localStorage.getItem('lottery_user');
+          
+          if (token && userStr && token.length > 10) {
+            const user = JSON.parse(userStr);
+            if (user && user.user_id && user.username) {
+              if (user.is_admin) {
+                router.replace('/admin');
+              } else {
+                router.replace('/dashboard');
+              }
+            }
+          }
+        } catch {
+          // Invalid data, ignore
+        }
+      }
+    };
+
+    const timer = setTimeout(checkAuth, 100);
+    return () => clearTimeout(timer);
+  }, [router]);
 
   useEffect(() => {
     const spinBalls = () => {
