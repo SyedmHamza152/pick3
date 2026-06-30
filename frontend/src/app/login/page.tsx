@@ -15,29 +15,32 @@ export default function Login() {
   // Status message state control blocks
   const [msgText, setMsgText] = useState<string>('');
   const [showMsg, setShowMsg] = useState<boolean>(false);
+  const [isChecking, setIsChecking] = useState<boolean>(true);
 
   // Redirect if already authenticated
   useEffect(() => {
     const checkAuthAndRedirect = () => {
       if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('lottery_token');
-        const userStr = localStorage.getItem('lottery_user');
-        
-        if (token && userStr) {
-          try {
+        try {
+          const token = localStorage.getItem('lottery_token');
+          const userStr = localStorage.getItem('lottery_user');
+          
+          if (token && userStr) {
             const user = JSON.parse(userStr);
-            if (user) {
+            if (user && user.user_id) {
               if (user.is_admin) {
                 router.push('/admin');
               } else {
                 router.push('/dashboard');
               }
+              return;
             }
-          } catch {
-            // Invalid user data, stay on login
           }
+        } catch {
+          // Invalid user data, stay on login
         }
       }
+      setIsChecking(false);
     };
 
     // Increased delay to ensure localStorage is available on mobile
@@ -77,6 +80,14 @@ export default function Login() {
       setShowMsg(true);
     }
   };
+
+  if (isChecking) {
+    return (
+      <div className="flex items-center justify-center min-h-screen p-5 bg-bg text-textCustom font-sans">
+        <div className="text-sm">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen p-5 bg-bg text-textCustom font-sans">
