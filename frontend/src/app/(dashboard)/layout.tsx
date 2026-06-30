@@ -10,13 +10,36 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
+  const [isChecking, setIsChecking] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!auth.token || !auth.user) {
-      router.push('/login');
-    } else {
-      setIsAuthenticated(true);
-    }
+    // Wait for client-side hydration before checking auth
+    const checkAuth = () => {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('lottery_token');
+        const userStr = localStorage.getItem('lottery_user');
+        
+        if (!token || !userStr) {
+          router.push('/login');
+        } else {
+          try {
+            const user = JSON.parse(userStr);
+            if (user) {
+              setIsAuthenticated(true);
+            } else {
+              router.push('/login');
+            }
+          } catch {
+            router.push('/login');
+          }
+        }
+        setIsChecking(false);
+      }
+    };
+
+    // Small delay to ensure localStorage is available
+    const timer = setTimeout(checkAuth, 100);
+    return () => clearTimeout(timer);
   }, [router]);
 
   const handleLogout = () => {
@@ -26,7 +49,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   };
 
-  if (!isAuthenticated) {
+  if (isChecking || !isAuthenticated) {
     return null;
   }
 

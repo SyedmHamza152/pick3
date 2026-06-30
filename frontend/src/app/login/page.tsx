@@ -18,13 +18,31 @@ export default function Login() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (auth.token && auth.user) {
-      if (auth.user.is_admin) {
-        router.push('/admin');
-      } else {
-        router.push('/dashboard');
+    const checkAuthAndRedirect = () => {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('lottery_token');
+        const userStr = localStorage.getItem('lottery_user');
+        
+        if (token && userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            if (user) {
+              if (user.is_admin) {
+                router.push('/admin');
+              } else {
+                router.push('/dashboard');
+              }
+            }
+          } catch {
+            // Invalid user data, stay on login
+          }
+        }
       }
-    }
+    };
+
+    // Small delay to ensure localStorage is available
+    const timer = setTimeout(checkAuthAndRedirect, 100);
+    return () => clearTimeout(timer);
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
