@@ -111,6 +111,12 @@ class WinnerOut(BaseModel):
     ticket_type: str
     prize_amount: Decimal
     announced_date: datetime
+    
+    # Alias for frontend compatibility
+    @computed_field
+    @property
+    def created_at(self) -> datetime:
+        return self.announced_date
 
 
 class AnnounceWinnersOut(BaseModel):
