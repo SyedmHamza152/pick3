@@ -27,20 +27,15 @@ export default function SignUpForm() {
     setShowMsg(false);
 
     try {
-      const trimmedPhone = phone.trim();
-
       // Rebuild matching your native javascript body payload structure filter
       const body: any = {
         username: username.trim(),
         email: email.trim(),
+        phone: phone.trim(),
         security_question: securityQuestion,
         security_answer: securityAnswer.trim(),
         password: password,
       };
-
-      if (trimmedPhone) {
-        body.phone = trimmedPhone;
-      }
 
       const data = await api('/api/auth/signup', {
         method: 'POST',
@@ -128,7 +123,7 @@ export default function SignUpForm() {
           onChange={(e) => setPhone(e.target.value)}
         />
         <p className="text-mutedCustom mt-1.5 text-[0.85rem] font-normal leading-normal">
-          You will receive a unique member ID (e.g. LOT000042) after signup.
+          You will receive a unique member ID (e.g. LOT42) after signup.
         </p>
         <div className="h-2.5"></div>
 

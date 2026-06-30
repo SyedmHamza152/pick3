@@ -1,45 +1,37 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 
 interface SidebarProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
-  handleLogout: () => void;
 }
 
-export default function Sidebar({ isMobileOpen, setIsMobileOpen, handleLogout }: SidebarProps) {
-  const pathname = usePathname();
-
-  // Menu array grouped exactly into your three target categories
+export default function Sidebar({ activeTab, setActiveTab, isMobileOpen, setIsMobileOpen }: SidebarProps) {
+  // Admin menu array with admin-specific items
   const menuGroups = [
     {
-      title: 'Lottery Hub',
+      title: 'Overview/Control',
       items: [
-        { title: 'Dashboard', icon: '🏠', href: '/dashboard' },
-        { title: 'Play Lottery', icon: '🎲', href: '/dashboard/play' },
-        { title: 'Game History', icon: '📜', href: '/dashboard/history' },
-        { title: 'Transactions', icon: '📊', href: '/dashboard/transactions' },
+        { title: 'Users', icon: '👥', tab: 'users' },
+        { title: 'Manage Balance', icon: '💰', tab: 'balance' },
       ],
     },
     {
-      title: 'Wallet',
+      title: "Payment's Management",
       items: [
-        { title: 'Wallet', icon: '💰', href: '/dashboard/wallet' },
-        { title: 'Recharge', icon: '💳', href: '/dashboard/recharge' },
-        { title: 'Withdraw', icon: '💸', href: '/dashboard/withdraw' },
-        { title: 'Offers', icon: '🎁', href: '/dashboard/offers' },
-        { title: 'Referrals', icon: '👥', href: '/dashboard/referrals' },
+        { title: 'Pending Deposits', icon: '💳', tab: 'deposits' },
+        { title: 'Delete Screenshots', icon: '📸', tab: 'screenshots' },
       ],
     },
     {
-      title: 'Account',
+      title: 'Lottery Management',
       items: [
-        { title: 'Profile', icon: '👤', href: '/dashboard/profile' },
-        { title: 'Change Password', icon: '🔒', href: '/dashboard/change-password' },
-        { title: 'Help', icon: '❓', href: '/dashboard/help' },
+        { title: 'Announce Winner', icon: '🏆', tab: 'announce' },
+        { title: 'Search Winner', icon: '🔍', tab: 'search' },
+        { title: 'Lottery Report', icon: '📊', tab: 'reports' },
       ],
     },
   ];
@@ -79,17 +71,17 @@ export default function Sidebar({ isMobileOpen, setIsMobileOpen, handleLogout }:
                 </div>
                 <div className="space-y-0.5 px-2">
                   {group.items.map((item, iIdx) => {
-                    // 🟢 FIXED: Fallback condition checking to track exact nested route folders safely
-                    const isActive = item.href === '/dashboard' 
-                      ? pathname === '/dashboard' 
-                      : pathname.startsWith(item.href);
+                    const isActive = activeTab === item.tab;
 
                     return (
-                      <Link
+                      <button
                         key={iIdx}
-                        href={item.href}
-                        onClick={() => setIsMobileOpen(false)}
-                        className={`w-full flex items-center gap-3 py-2 px-3 rounded-xl text-[13px] font-medium transition-all ${
+                        type="button"
+                        onClick={() => {
+                          setActiveTab(item.tab);
+                          setIsMobileOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 py-2 px-3 rounded-xl text-[13px] font-medium transition-all cursor-pointer border-none bg-transparent ${
                           isActive 
                             ? 'bg-[#a855f7]/20 text-[#a855f7] font-semibold shadow-inner' 
                             : 'text-[#f1f0ff]/80 hover:bg-[#1e1e2a] hover:text-white'
@@ -97,7 +89,7 @@ export default function Sidebar({ isMobileOpen, setIsMobileOpen, handleLogout }:
                       >
                         <span className="text-base w-5 text-center flex-shrink-0">{item.icon}</span>
                         {item.title}
-                      </Link>
+                      </button>
                     );
                   })}
                 </div>
@@ -109,7 +101,7 @@ export default function Sidebar({ isMobileOpen, setIsMobileOpen, handleLogout }:
           <div className="pt-2 px-2 border-t border-[#2a2a3a]/40">
             <button
               type="button"
-              onClick={handleLogout}
+              onClick={() => window.location.href = '/login'}
               className="w-full flex items-center gap-3 py-2 px-3 rounded-xl text-[13px] font-medium text-red-400 hover:bg-red-500/10 transition-all text-left cursor-pointer border-none bg-transparent"
             >
               <span className="text-base w-5 text-center shrink-0">🔓</span>

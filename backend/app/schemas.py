@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, conint, condecimal, field_validator
+from pydantic import BaseModel, Field, conint, condecimal, field_validator, computed_field
 from typing import Optional, Literal
 from datetime import datetime, date
 from decimal import Decimal
@@ -8,16 +8,16 @@ Digit = conint(ge=0, le=9)
 class SignupIn(BaseModel):
     username: str = Field(min_length=3, max_length=64, pattern=r"^[A-Za-z0-9_.-]+$")
     password: str = Field(min_length=6, max_length=128)
-    phone: Optional[str] = Field(default=None, max_length=20)
+    phone: str = Field(max_length=20)
     email: str = Field(max_length=255)
     security_question: str = Field(min_length=1, max_length=255)
     security_answer: str = Field(min_length=1, max_length=255)
 
     @field_validator("phone")
     @classmethod
-    def normalize_phone(cls, v: Optional[str]) -> Optional[str]:
-        if v is None or not str(v).strip():
-            return None
+    def normalize_phone(cls, v: str) -> str:
+        if not v or not str(v).strip():
+            raise ValueError("Phone number is required")
         cleaned = "".join(c for c in str(v).strip() if c.isdigit() or c == "+")
         if len(cleaned) < 7 or len(cleaned) > 15:
             raise ValueError("Phone must be 7–15 digits (optional + prefix)")
@@ -69,6 +69,12 @@ class TicketOut(BaseModel):
     amount_wagered: Decimal
     status: str
     created_at: datetime
+    
+    @computed_field
+    @property
+    def numbers(self) -> str:
+        return f"{self.n1} - {self.n2} - {self.n3}"
+    
     class Config: from_attributes = True
 
 class DepositRequestOut(BaseModel):
@@ -100,6 +106,8 @@ class WinnerOut(BaseModel):
     username: Optional[str] = None
     phone: Optional[str] = None
     w1: int; w2: int; w3: int
+    winning_number: str
+    numbers: Optional[str] = None
     ticket_type: str
     prize_amount: Decimal
     announced_date: datetime

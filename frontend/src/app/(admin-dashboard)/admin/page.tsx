@@ -48,12 +48,12 @@ export default function AdminDashboard() {
         {/* Removed w-full conflict wrapper to restore clean box layout distributions */}
         <div className="max-w-[1600px] mx-auto">
           {activeTab === 'users' && <UsersView />}
-          {activeTab === 'wallet' && <WalletView />}
+          {activeTab === 'balance' && <WalletView />}
           {activeTab === 'deposits' && <DepositsView />}
-          {activeTab === 'reports' && <ReportsView />}
           {activeTab === 'screenshots' && <ScreenshotsView />}
           {activeTab === 'announce' && <AnnounceView />}
           {activeTab === 'search' && <SearchView />}
+          {activeTab === 'reports' && <ReportsView />}
         </div>
       </main>
 

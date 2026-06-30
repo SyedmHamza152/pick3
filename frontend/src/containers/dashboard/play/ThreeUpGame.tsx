@@ -14,7 +14,8 @@ export default function ThreeUpGame() {
   // ✅ CHANGED: single → multiple selection
   const [ticketTypes, setTicketTypes] = useState<string[]>(['straight']);
 
-  const [wager, setWager] = useState('');
+  const [straightWager, setStraightWager] = useState('');
+  const [rumbleWager, setRumbleWager] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   const [msgText, setMsgText] = useState('');
@@ -27,8 +28,8 @@ export default function ThreeUpGame() {
     setShowMsg(true);
   };
 
-  const getWagerHint = () => {
-    const numWager = Number(wager);
+  const getWagerHint = (type: 'straight' | 'rumble') => {
+    const numWager = Number(type === 'straight' ? straightWager : rumbleWager);
     if (!numWager || numWager <= 0) return '';
     const actualDeduction = numWager * 0.57;
     return `🎁 43% Instant Cashback: Only ${fmtRiyal(actualDeduction)} will be deducted from your account.`;
@@ -49,10 +50,20 @@ export default function ThreeUpGame() {
       return;
     }
 
+    // Validate wager amounts
+    if (ticketTypes.includes('straight') && (!straightWager || Number(straightWager) <= 0)) {
+      displayMessage('Please enter a wager amount for Straight.');
+      return;
+    }
+    if (ticketTypes.includes('rumble') && (!rumbleWager || Number(rumbleWager) <= 0)) {
+      displayMessage('Please enter a wager amount for Rumble.');
+      return;
+    }
+
     setSubmitting(true);
 
     try {
-      // ✅ CHANGED: loop for multiple types
+      // ✅ CHANGED: loop for multiple types with separate wagers
       await Promise.all(
         ticketTypes.map((type) =>
           api('/api/tickets/', {
@@ -62,7 +73,7 @@ export default function ThreeUpGame() {
               n2: Number(n2),
               n3: Number(n3),
               ticket_type: type,
-              amount_wagered: Number(wager),
+              amount_wagered: Number(type === 'straight' ? straightWager : rumbleWager),
             },
             auth: true,
           })
@@ -74,7 +85,8 @@ export default function ThreeUpGame() {
       setN1('');
       setN2('');
       setN3('');
-      setWager('');
+      setStraightWager('');
+      setRumbleWager('');
       setTicketTypes(['straight']); // reset default
     } catch (err: any) {
       displayMessage(err.message || 'Failed to place bet.');
@@ -193,18 +205,60 @@ export default function ThreeUpGame() {
             </label>
           </div>
 
-          <div>
-            <input
-              className="w-full bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] px-4 py-2.5 rounded-xl text-sm outline-none"
-              type="number"
-              placeholder="e.g. 1"
-              value={wager}
-              onChange={(e) => setWager(e.target.value)}
-            />
-
-            <p className="text-[#10b981] mt-2 text-xs font-medium min-h-[16px]">
-              {getWagerHint()}
-            </p>
+          <div className="space-y-3">
+            <label className="block text-[11px] font-bold text-[#7b7a95] uppercase tracking-[0.5px]">
+              Wager Amount
+            </label>
+            
+            {ticketTypes.length === 1 ? (
+              // Single wager input when only one type selected
+              <div>
+                <input
+                  className="w-full bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] px-4 py-2.5 rounded-xl text-sm outline-none"
+                  type="number"
+                  placeholder="e.g. 1"
+                  value={ticketTypes[0] === 'straight' ? straightWager : rumbleWager}
+                  onChange={(e) => 
+                    ticketTypes[0] === 'straight' 
+                      ? setStraightWager(e.target.value) 
+                      : setRumbleWager(e.target.value)
+                  }
+                />
+                <p className="text-[#10b981] mt-2 text-xs font-medium min-h-[16px]">
+                  {getWagerHint(ticketTypes[0] as 'straight' | 'rumble')}
+                </p>
+              </div>
+            ) : (
+              // Two separate wager inputs when both types selected
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-[10px] text-[#7b7a95] mb-1">Straight Wager</label>
+                  <input
+                    className="w-full bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] px-4 py-2.5 rounded-xl text-sm outline-none"
+                    type="number"
+                    placeholder="e.g. 1"
+                    value={straightWager}
+                    onChange={(e) => setStraightWager(e.target.value)}
+                  />
+                  <p className="text-[#10b981] mt-1 text-xs font-medium min-h-[16px]">
+                    {getWagerHint('straight')}
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-[10px] text-[#7b7a95] mb-1">Rumble Wager</label>
+                  <input
+                    className="w-full bg-[#1e1e2a] border border-[#2a2a3a] text-[#f1f0ff] px-4 py-2.5 rounded-xl text-sm outline-none"
+                    type="number"
+                    placeholder="e.g. 1"
+                    value={rumbleWager}
+                    onChange={(e) => setRumbleWager(e.target.value)}
+                  />
+                  <p className="text-[#10b981] mt-1 text-xs font-medium min-h-[16px]">
+                    {getWagerHint('rumble')}
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
         </div>

@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import { api, fmtDate, fmtRiyal } from '@/utils/api';
 
 interface SearchWinnerItem {
+  winner_id?: number;
   username?: string;
   user_id: number;
   phone?: string;
   numbers: string;
+  winning_number?: string;
   prize_amount: number;
   created_at: string;
 }
@@ -143,9 +145,11 @@ export default function SearchView() {
           <table className="w-full border-collapse text-xs min-w-[600px]">
             <thead>
               <tr className="border-b border-[#2a2a3a]">
+                <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Winner ID</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">User</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Phone</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Numbers</th>
+                <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Winning Number</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Prize</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Date</th>
               </tr>
@@ -154,16 +158,18 @@ export default function SearchView() {
               {straightMatches.length > 0 ? (
                 straightMatches.map((item, idx) => (
                   <tr key={idx} className="hover:bg-[#1e1e2a]/50 transition-colors">
+                    <td className="py-4 text-[#f1f0ff]">#{item.winner_id || '—'}</td>
                     <td className="py-4 text-[#f1f0ff]">@{item.username || item.user_id}</td>
                     <td className="py-4 text-[#7b7a95]">{item.phone || '—'}</td>
                     <td className="py-4 text-[#a855f7] font-bold tracking-wider">{item.numbers}</td>
+                    <td className="py-4 text-[#fbbf24] font-bold tracking-wider">{item.winning_number || '—'}</td>
                     <td className="py-4 text-[#10b981] font-bold">{fmtRiyal(item.prize_amount)}</td>
                     <td className="py-4 text-[#7b7a95] whitespace-nowrap">{fmtDate(item.created_at)}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-4 text-center text-[#7b7a95] italic">No straight matches returned.</td>
+                  <td colSpan={7} className="py-4 text-center text-[#7b7a95] italic">No straight matches returned.</td>
                 </tr>
               )}
             </tbody>
@@ -178,9 +184,11 @@ export default function SearchView() {
           <table className="w-full border-collapse text-xs min-w-[600px]">
             <thead>
               <tr className="border-b border-[#2a2a3a]">
+                <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Winner ID</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">User</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Phone</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Numbers</th>
+                <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Winning Number</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Prize</th>
                 <th className="text-left pb-3 text-[11.5px] font-semibold uppercase tracking-wider text-[#7b7a95]">Date</th>
               </tr>
@@ -189,16 +197,18 @@ export default function SearchView() {
               {rumbleMatches.length > 0 ? (
                 rumbleMatches.map((item, idx) => (
                   <tr key={idx} className="hover:bg-[#1e1e2a]/50 transition-colors">
+                    <td className="py-4 text-[#f1f0ff]">#{item.winner_id || '—'}</td>
                     <td className="py-4 text-[#f1f0ff]">@{item.username || item.user_id}</td>
                     <td className="py-4 text-[#7b7a95]">{item.phone || '—'}</td>
                     <td className="py-4 text-[#a855f7] font-bold tracking-wider">{item.numbers}</td>
+                    <td className="py-4 text-[#fbbf24] font-bold tracking-wider">{item.winning_number || '—'}</td>
                     <td className="py-4 text-[#10b981] font-bold">{fmtRiyal(item.prize_amount)}</td>
                     <td className="py-4 text-[#7b7a95] whitespace-nowrap">{fmtDate(item.created_at)}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="py-4 text-center text-[#7b7a95] italic">No rumble matches returned.</td>
+                  <td colSpan={7} className="py-4 text-center text-[#7b7a95] italic">No rumble matches returned.</td>
                 </tr>
               )}
             </tbody>

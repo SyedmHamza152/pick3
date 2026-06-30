@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api, auth } from '@/utils/api';
@@ -15,6 +15,17 @@ export default function Login() {
   // Status message state control blocks
   const [msgText, setMsgText] = useState<string>('');
   const [showMsg, setShowMsg] = useState<boolean>(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (auth.token && auth.user) {
+      if (auth.user.is_admin) {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
+    }
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -7,7 +7,7 @@ class User(Base):
     user_id = Column(Integer, primary_key=True)
     public_id = Column(String(16), unique=True, nullable=False)
     username = Column(String(64), unique=True, nullable=False)
-    phone = Column(String(20), unique=True, nullable=True)
+    phone = Column(String(20), unique=True, nullable=False)
     email = Column(String(255), unique=True, nullable=True)
     security_question = Column(String(255), nullable=False)
     security_answer = Column(String(255), nullable=False)

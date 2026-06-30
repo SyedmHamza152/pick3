@@ -228,6 +228,8 @@ def announce_winners(data: WinnerIn, db: Session = Depends(get_db), _: User = De
             w1=w.w1,
             w2=w.w2,
             w3=w.w3,
+            winning_number=f"{w.w1}{w.w2}{w.w3}",
+            numbers=None,
             ticket_type=w.ticket_type,
             prize_amount=w.prize_amount,
             announced_date=w.announced_date,
@@ -257,8 +259,10 @@ def search_winners(
     if date_from and date_to and date_from > date_to:
         raise HTTPException(400, "date_from must be on or before date_to")
 
-    base = db.query(Winner, User.username, User.public_id, User.phone).join(
+    base = db.query(Winner, User.username, User.public_id, User.phone, LotteryTicket.n1, LotteryTicket.n2, LotteryTicket.n3).join(
         User, User.user_id == Winner.user_id
+    ).join(
+        LotteryTicket, LotteryTicket.ticket_id == Winner.ticket_id
     )
     if date_from:
         start = datetime.combine(date_from, datetime.min.time(), tzinfo=timezone.utc)
@@ -280,7 +284,7 @@ def search_winners(
         r_rows = base.filter(Winner.ticket_type == "rumble").all()
         target = sorted([a, b, c])
         r_rows = [
-            (w, u, pid, ph) for (w, u, pid, ph) in r_rows
+            (w, u, pid, ph, n1, n2, n3) for (w, u, pid, ph, n1, n2, n3) in r_rows
             if sorted([w.w1, w.w2, w.w3]) == target
         ]
         straight, rumble = s_rows, r_rows
@@ -298,9 +302,9 @@ def search_winners(
                     return False
             return True
 
-        for w, u, pid, ph in rows:
+        for w, u, pid, ph, n1, n2, n3 in rows:
             if contains_all(w):
-                (straight if w.ticket_type == "straight" else rumble).append((w, u, pid, ph))
+                (straight if w.ticket_type == "straight" else rumble).append((w, u, pid, ph, n1, n2, n3))
 
     def to_out(pairs):
         return [
@@ -313,11 +317,13 @@ def search_winners(
                 w1=w.w1,
                 w2=w.w2,
                 w3=w.w3,
+                winning_number=f"{w.w1}{w.w2}{w.w3}",
+                numbers=f"{n1}{n2}{n3}",
                 ticket_type=w.ticket_type,
                 prize_amount=w.prize_amount,
                 announced_date=w.announced_date,
             ).model_dump()
-            for w, u, pid, ph in pairs
+            for w, u, pid, ph, n1, n2, n3 in pairs
         ]
 
     return {"straight": to_out(straight), "rumble": to_out(rumble)}

@@ -47,6 +47,8 @@ def list_winners(db: Session = Depends(get_db), _: User = Depends(get_current_us
             w1=w.w1,
             w2=w.w2,
             w3=w.w3,
+            winning_number=f"{w.w1}{w.w2}{w.w3}",
+            numbers=None,
             ticket_type=w.ticket_type,
             prize_amount=w.prize_amount,
             announced_date=w.announced_date,
