@@ -34,13 +34,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
     };
 
-    // Small delay to ensure localStorage is available
-    const timer = setTimeout(checkAuth, 100);
+    // Increased delay to ensure localStorage is available on mobile
+    const timer = setTimeout(checkAuth, 500);
     return () => clearTimeout(timer);
   }, [router]);
 
   if (isChecking || !isAuthenticated) {
-    return null;
+    return (
+      <div className="min-h-screen bg-[#1A202C] flex items-center justify-center">
+        <div className="text-[#f1f0ff] text-sm">Loading...</div>
+      </div>
+    );
   }
 
   return (

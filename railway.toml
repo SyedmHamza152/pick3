@@ -9,3 +9,6 @@ dockerfilePath = "Dockerfile"
 healthcheckPath = "/api/health"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
+
+[env]
+NODE_ENV = "production"

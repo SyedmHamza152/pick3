@@ -32,3 +32,5 @@ services:
         value: "5"
       - key: PORT
         value: "8000"
+      - key: NODE_ENV
+        value: "production"

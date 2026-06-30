@@ -37,8 +37,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       }
     };
 
-    // Small delay to ensure localStorage is available
-    const timer = setTimeout(checkAuth, 100);
+    // Increased delay to ensure localStorage is available on mobile
+    const timer = setTimeout(checkAuth, 500);
     return () => clearTimeout(timer);
   }, [router]);
 
@@ -50,7 +50,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   if (isChecking || !isAuthenticated) {
-    return null;
+    return (
+      <div className="min-h-screen bg-[#1A202C] flex items-center justify-center">
+        <div className="text-[#f1f0ff] text-sm">Loading...</div>
+      </div>
+    );
   }
 
   return (

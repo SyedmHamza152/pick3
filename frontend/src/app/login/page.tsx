@@ -40,8 +40,8 @@ export default function Login() {
       }
     };
 
-    // Small delay to ensure localStorage is available
-    const timer = setTimeout(checkAuthAndRedirect, 100);
+    // Increased delay to ensure localStorage is available on mobile
+    const timer = setTimeout(checkAuthAndRedirect, 500);
     return () => clearTimeout(timer);
   }, [router]);
 
